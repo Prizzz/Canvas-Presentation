@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+
+    <title>Canvas</title>
+
+    <link rel="stylesheet" href="dist/reset.css" />
+    <link rel="stylesheet" href="dist/reveal.css" />
+    <link rel="stylesheet" href="dist/theme/black.css" />
+
+    <!-- Theme used for syntax highlighted code -->
+    <link rel="stylesheet" href="plugin/highlight/monokai.css" />
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <h1>Canvas</h1>
+          <img src="assets/html5logo.webp" style="width: 300px" />
+        </section>
+
+        <section>
+          <h3>What is canvas?</h3>
+          <p style="font-size: 35px">
+            The Canvas API provides a means for drawing graphics via JavaScript
+            and the HTML &ltcanvas&gt element. Among other things, it can be
+            used for animation, game graphics, data visualization, photo
+            manipulation, and real-time video processing.
+          </p>
+        </section>
+
+        <section>
+          <h3>History</h3>
+          <p style="font-size: 35px">
+            The canvas element was first introduced by Apple in the WebKit
+            movement for Mac OS X with its use in Dashboard and Safari
+            applications. The missing canvas issue in IE was fixed by Google,
+            which issued a compensation for an extension written in JavaScript
+            called ExplorerCanvas.
+          </p>
+        </section>
+
+        <section>
+          <h3>Canvas Coordinates</h3>
+          <p style="font-size: 35px">
+            The canvas is a two-dimensional grid. The coordinate (0, 0) is at
+            the upper-left corner of the canvas. Along the X-axis, values
+            increase towards the right edge of the canvas. Along the Y-axis,
+            values increase towards the bottom edge of the canvas.
+          </p>
+          <img src="assets/coordinate.jfif" />
+        </section>
+
+        <section>
+          <section>
+            <h3>Simple shapes</h3>
+            <p style="font-size: 30px">
+              Every canvas has a drawing context, which is where all the fun
+              stuff happens. Once you’ve found a &ltcanvas&gt element in the DOM
+              (by using document.getElementById() or any other method you like),
+              you call its getContext() method. You must pass the string "2d" to
+              the getContext() method.
+            </p>
+            <pre>
+							<code data-trim data-noescape>
+								var b_canvas = document.getElementById("b");
+								var b_context = b_canvas.getContext("2d");
+							</code>
+						</pre>
+          </section>
+
+          <section>
+            <p style="font-size: 30px">
+              Calling the fillRect() method draws the rectangle and fills it
+              with the current fill style, which is black until you change it.
+              The rectangle is bounded by its upper-left corner (50, 25), its
+              width (150), and its height (100). To get a better picture of how
+              that works, let’s look at the canvas coordinate system.
+            </p>
+            <pre>
+							<code data-trim data-noescape>b_context.fillRect(50, 25, 150, 100);</code>
+						</pre>
+            <img src="assets/simpleShape.jpg" />
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>Paths</h3>
+            <p style="font-size: 30px">
+              To draw straight lines in pencil, you need to use the following
+              two methods:
+            </p>
+            <ol style="font-size: 30px">
+              <li>
+                moveTo(x, y) moves the pencil to the specified starting point.
+              </li>
+              <li>lineTo(x, y) draws a line to the specified ending point.</li>
+            </ol>
+
+            <pre>
+							<code data-trim data-noescape>
+								context.moveTo(x, 0);
+								context.lineTo(x, 375);
+							</code>
+						</pre>
+          </section>
+
+          <section>
+            <p style="font-size: 30px">
+              Those were all “pencil” methods. Nothing has actually been drawn
+              on the canvas yet. We need an “ink” method to make it permanent.
+            </p>
+            <pre>
+							<code data-trim data-noescape>
+								context.strokeStyle = "#eee";
+								context.stroke();
+							</code>
+						</pre>
+          </section>
+
+          <section>
+            <pre style="font-size: 16px">
+							<code data-trim data-noescape>
+								for (var x = 0.5; x < 500; x += 10) {
+									context.moveTo(x, 0);
+									context.lineTo(x, 375);
+								} //Draw vertical lines
+								
+								for (var y = 0.5; y < 375; y += 10) {
+									context.moveTo(0, y);
+									context.lineTo(500, y);
+								} //Draw horizontal lines
+
+								context.strokeStyle = "#eee";
+								context.stroke();
+							</code>
+						</pre>
+            <p style="font-size: 30px">Result:</p>
+            <img src="assets/paths.png" style="width: 45%" />
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>Text</h3>
+            <p style="font-size: 30px">
+              In addition to drawing lines on a canvas, you can also draw text
+              on a canvas. Unlike text on the surrounding web page, there is no
+              box model. That means none of the familiar CSS layout techniques
+              are available: no floats, no margins, no padding, no word
+              wrapping. You can set a few font attributes, then you pick a point
+              on the canvas and draw your text there.
+            </p>
+            <img src="assets/baselines.png" />
+          </section>
+
+          <section>
+            <p style="font-size: 30px">
+              Text drawn inside the canvas inherits the font size and style of
+              the &ltcanvas&gt element itself, but you can override this by
+              setting the font property on the drawing context.
+            </p>
+            <pre>
+							<code data-trim data-noescape>
+								context.font = "bold 12px sans-serif";
+								context.fillText("x", 248, 43);
+								context.fillText("y", 58, 165);
+							</code>
+						</pre>
+            <p style="font-size: 30px">
+              The fillText() method draws the actual text.
+            </p>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>IMAGES</h3>
+            <p style="font-size: 30px">
+              The canvas drawing context defines a drawImage() method for
+              drawing an image on a canvas. The HTML5 specification explains the
+              drawImage() parameters:
+            </p>
+            <ul style="font-size: 24px">
+              <li>
+                The source rectangle is the rectangle [within the source image]
+                whose corners are the four points (sx, sy), (sx+sw, sy), (sx+sw,
+                sy+sh), (sx, sy+sh).
+              </li>
+              <li>
+                The destination rectangle is the rectangle [within the canvas]
+                whose corners are the four points (dx, dy), (dx+dw, dy), (dx+dw,
+                dy+dh), (dx, dy+dh).
+              </li>
+            </ul>
+            <img src="assets/drawImage.png" />
+          </section>
+
+          <section>
+            <h4>Using an &ltimg&gt element</h4>
+            <p style="font-size: 25px">
+              If you’re using an existing &ltimg&gt element, you can safely draw
+              it on the canvas during the window.onload event.
+            </p>
+            <pre style="font-size: 18px">
+							<code data-trim data-noescape>
+								<script type="text/template">
+									<img id="cat" src="images/cat.png" alt="sleeping cat" width="177" height="113">
+									<canvas id="e" width="177" height="113"></canvas>
+									<script>
+									window.onload = function() {
+										var canvas = document.getElementById("e");
+										var context = canvas.getContext("2d");
+										var cat = document.getElementById("cat");
+										context.drawImage(cat, 0, 0);
+									};
+									</script>
+								</script>
+							</code>
+						</pre>
+          </section>
+
+					<section>
+            <h4>Using an Image() object</h4>
+            <p style="font-size: 25px">
+              If you’re creating the image object entirely in JavaScript, you can safely draw the image on the canvas during the Image.onload event.
+            </p>
+            <pre style="font-size: 18px">
+							<code data-trim data-noescape>
+								<script type="text/template">
+									<canvas id="e" width="177" height="113"></canvas>
+									<script>
+										var canvas = document.getElementById("e");
+										var context = canvas.getContext("2d");
+										var cat = new Image();
+										cat.src = "images/cat.png";
+										cat.onload = function() {
+											context.drawImage(cat, 0, 0);
+										};
+									</script>
+								</script>
+							</code>
+						</pre>
+          </section>
+        </section>
+
+				<section>
+          <section>
+            <h3>Click Event</h3>
+            <p style="font-size: 30px">
+              We add an event listener to the &ltcanvas&gt element to listen for click events.
+            </p>
+            <pre>
+							<code data-trim data-noescape>
+								gCanvasElement.addEventListener("click", halmaOnClick, false);
+							</code>
+						</pre>
+						<p style="font-size: 30px">
+              The halmaOnClick() function gets called when the user clicks anywhere within the canvas. Its argument is a MouseEvent object that contains information about where the user clicked.
+            </p>
+          </section>
+
+          <section>
+            <pre style="font-size: 18px">
+							<code data-trim data-noescape>
+								function halmaOnClick(e) {
+									var cell = getCursorPosition(e);
+									clickOnEmptyCell(cell);
+								}
+							</code>
+						</pre>
+						<p style="font-size: 30px">
+							The next step is to take the MouseEvent object and calculate which square on the Halma board just got clicked.
+						</p>
+          </section>
+
+					<section>
+            <pre style="font-size: 18px">
+							<code data-trim data-noescape>
+								function getCursorPosition(e) {
+									var x;
+									var y;
+									if (e.pageX != undefined && e.pageY != undefined) {
+										x = e.pageX;
+										y = e.pageY;
+									}
+									else {
+										x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+										y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+									}
+									x -= gCanvasElement.offsetLeft;
+									y -= gCanvasElement.offsetTop;
+									x = Math.min(x, kBoardWidth * kPieceWidth);
+									y = Math.min(y, kBoardHeight * kPieceHeight);
+									var cell = new Cell(Math.floor(y/kPieceHeight), Math.floor(x/kPieceWidth));
+									return cell;
+								}
+							</code>
+						</pre>
+						<p style="font-size: 30px">
+							Resume: mouse click → document-relative coordinates → canvas-relative coordinates → application-specific code.
+						</p>
+          </section>
+        </section>
+
+				<section>
+					<h3>RESPONSIVENESS IN CANVAS</h3>
+					<p style="font-size: 30px">
+						You can have a responsive canvas in 3 short and simple steps:<br>
+						1. Remove the width and height attributes from your &ltcanvas&gt.
+					</p>
+					<pre>
+						<code data-trim data-noescape>
+							<script type="text/template">
+								<canvas id="responsive-canvas"></canvas>
+							</script>
+						</code>
+					</pre>
+					<p style="font-size: 30px">
+						2. Using CSS, set the width of your canvas to 100%.
+					</p>
+					<pre>
+						<code data-trim data-noescape>
+							#responsive-canvas {
+								width: 100%;
+							}
+						</code>
+					</pre>
+					<p style="font-size: 30px">
+						3. Using JavaScript, set the height to some ratio of the width.
+					</p>
+					<pre>
+						<code data-trim data-noescape>
+							var canvas = document.getElementById('responsive-canvas');
+							var heightRatio = 1.5;
+							canvas.height = canvas.width * heightRatio;
+						</code>
+					</pre>
+				</section>
+
+				<section>
+					<h3>Summary</h3>
+					<p style="font-size: 30px">
+						Canvas is one of the most interesting HTML5 features, and it's ready to be used within most modern Web browsers. It provides all you need to create games, user interface enhancements, and other things besides. The 2D context API includes a wealth of functionality in addition to that discussed in this article - I hope you've gained a good grounding in canvas, and a thirst to know more!
+					</p>
+				</section>
+      </div>
+    </div>
+
+    <script src="dist/reveal.js"></script>
+    <script src="plugin/notes/notes.js"></script>
+    <script src="plugin/markdown/markdown.js"></script>
+    <script src="plugin/highlight/highlight.js"></script>
+    <script>
+      // More info about initialization & config:
+      // - https://revealjs.com/initialization/
+      // - https://revealjs.com/config/
+      Reveal.initialize({
+        hash: true,
+
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
+      });
+    </script>
+  </body>
+</html>
